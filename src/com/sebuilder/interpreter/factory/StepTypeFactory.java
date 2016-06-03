@@ -27,6 +27,7 @@ import java.util.HashMap;
  */
 public class StepTypeFactory {
 	public static final String DEFAULT_PACKAGE = "com.sebuilder.interpreter.steptype";
+	public static final String CONDITIONAL_PACKAGE = "com.sebuilder.interpreter.steptype.conditionals";
 
 	/**
 	 * Primary package used to load stepType instances
@@ -36,7 +37,7 @@ public class StepTypeFactory {
 	 * Secondary package used to load stepType instances when first package is
 	 * not found
 	 */
-	private String secondaryPackage = DEFAULT_PACKAGE;
+	private String secondaryPackage = CONDITIONAL_PACKAGE;
 
 	public String getPrimaryPackage() { return primaryPackage;}
 	public void setPrimaryPackage(String primaryPackage) { this.primaryPackage = primaryPackage; }

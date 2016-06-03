@@ -22,6 +22,10 @@ import com.sebuilder.interpreter.TestRun;
 public class Eval implements Getter {
 	@Override
 	public String get(TestRun ctx) {
+		String script = ctx.string("script");
+		if(!script.contains("return")) {
+			ctx.log().warn("JS evaluation does not contain a return statement");
+		}
 		Object result = ctx.driver().executeScript(ctx.string("script"));
 		return result == null ? null : result.toString();
 	}

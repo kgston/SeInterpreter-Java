@@ -26,7 +26,11 @@ public class SaveScreenshot implements StepType {
 	@Override
 	public boolean run(TestRun ctx) {
 		try {
-			return ((File) ctx.driver().getClass().getMethod("getScreenshotAs", OutputType.class).invoke(ctx.driver(), OutputType.FILE)).renameTo(new File(ctx.string("file")));
+			File destination = new File(ctx.string("file"));
+			if(destination.exists()) {
+				destination.delete();
+			}
+			return ((File) ctx.driver().getClass().getMethod("getScreenshotAs", OutputType.class).invoke(ctx.driver(), OutputType.FILE)).renameTo(destination);
 		} catch (NoSuchMethodException e) {
 			ctx.log().fatal("Driver does not support getScreenshotAs", e);
 			return false;

@@ -17,9 +17,13 @@
 package com.sebuilder.interpreter;
 
 import com.sebuilder.interpreter.webdriverfactory.WebDriverFactory;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.Keys;
@@ -27,7 +31,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 /**
  * A single run of a test script.
- * @author zarkonnen
+ * @author zarkonnen, Kingston Chan
  */
 public class TestRun {
 	HashMap<String, String> vars = new HashMap<String, String>();
@@ -39,7 +43,23 @@ public class TestRun {
 	HashMap<String, String> webDriverConfig = new HashMap<String, String>();
 	Long implicitlyWaitDriverTimeout;
 	Long pageLoadDriverTimeout;
-	public Log getLog() { return log; }
+
+	//START Conditionals addition
+	private Deque<ConditionalStepResult> activeConditionals = new ArrayDeque<ConditionalStepResult> ();
+
+	public int getStepIndex() {
+		return stepIndex;
+	}
+
+	public void setStepIndex(int stepIndex) {
+		this.stepIndex = stepIndex;
+	}
+
+	public Deque<ConditionalStepResult> getActiveConditionals() {
+		return activeConditionals;
+	}
+	//END Conditionals addition
+
 	public RemoteWebDriver getDriver() { return driver; }
 	public Script getScript() { return script; }
 
@@ -146,10 +166,27 @@ public class TestRun {
 
 		initRemoteWebDriver();
 
-		log.debug("Running step " + (stepIndex + 2) + ": " + script.steps.get(stepIndex + 1).toPrettyString());
+		Step nextStep = script.steps.get(++stepIndex);
+		log.debug("Running step " + (stepIndex + 1) + ": " + nextStep.toPrettyString());
 		boolean result = false;
 		try {
-			result = script.steps.get(++stepIndex).type.run(this);
+			ConditionalStepResult lastActiveConditional = activeConditionals.peekFirst();
+			if(nextStep.type instanceof ConditionalStepType) {
+				log.debug("Conditional step - " + nextStep.type.getClass().getSimpleName());
+				result = nextStep.type.run(this);
+				log.debug(activeConditionals);
+			} else if(lastActiveConditional == null) {
+				log.debug("No existing conditionals");
+				result = nextStep.type.run(this);
+			} else if(!lastActiveConditional.skip()) {
+				log.debug("Existing conditionals, execute mode");
+				log.debug(activeConditionals);
+				result = nextStep.type.run(this);
+			} else {
+				//Else skip the rest of the steps until end of the conditional
+				log.debug("Existing conditionals, skip mode");
+				result = true;
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(currentStep() + " failed.", e);
 		}

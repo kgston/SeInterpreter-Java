@@ -35,7 +35,9 @@ public class DataSourceFactory {
 		return customDataSourcePackage;
 	}
 
-	/** Package from which the factory preferentially loads in data sources. */
+	/** Package from which the factory preferentially loads in data sources.
+	 * @param customDataSourcePackage A customDataSourcePackage
+	 */
 	public void setCustomDataSourcePackage(String customDataSourcePackage) {
 		this.customDataSourcePackage = customDataSourcePackage;
 	}
