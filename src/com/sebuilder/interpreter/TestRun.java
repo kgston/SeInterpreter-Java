@@ -60,6 +60,11 @@ public class TestRun {
 	}
 	//END Conditionals addition
 
+	//Start SaveScreenshotFull
+	public HashMap<String, String> getWebDriverConfig() {
+		return webDriverConfig;
+	}
+
 	public RemoteWebDriver getDriver() { return driver; }
 	public Script getScript() { return script; }
 
