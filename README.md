@@ -1,4 +1,4 @@
-# TMS-SeInterpreter
+# kgston/SeInterpreter-Java
 
 Java-based standalone interpreter for Selenium Builder scripts.  
 Forked from [https://github.com/SeleniumBuilder/SeInterpreter-Java]()
@@ -14,7 +14,7 @@ This way, test writers are able to leverage on the functionalities of Selenium B
 This fork of Selenium Interpreter includes the following changes
 
 1. Addition of logic flow control - If, For and While loops
-1. Ability to take fullscreen screenshots from unsupported browers
+1. Ability to take fullscreen screenshots from unsupported browsers
 
 ## How to build
 
